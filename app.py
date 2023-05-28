@@ -2,33 +2,48 @@
 import torch
 from PIL import Image
 import streamlit as st
+import base64
+import io
 
-model = torch.hub.load('ultralytics/yolov5', 'custom', path='weights/best.pt')  # yolov5n - yolov5x6 or custom
+st.cache_resource
+def load_model():
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='weights/best.pt')  # yolov5n - yolov5x6 or custom
+    return model
 
-#im = 'bottles.jpg'  # file, Path, PIL.Image, OpenCV, nparray, list
+model = load_model()
 
-# Create a file uploader widget
-uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+def string_to_pil_image(image_string):
+    decoded_data = base64.b64decode(image_string)
+    image_bytes = io.BytesIO(decoded_data)
+    pil_image = Image.open(image_bytes)
+    return pil_image
 
-# Check if a file was uploaded
-if uploaded_file is not None:
-    # Process the uploaded file
-    image = Image.open(uploaded_file)
-    # Perform operations on the image, such as displaying or analyzing
-    results = model(image)  # inference
-    results.show()
-    st.image(image, caption='Uploaded Image')
+def handle_file_upload():
+    uploaded_file = st.text_area('Insert Image String')
 
-    if  str(results).find('plastic bottle') == -1:
-        st.write('No Plastic Bottle Detected.')
-        print('No Plastic Bottle Detected.')
-    else:
-        st.write('Plastic Bottle Detected!')
-        print('Plastic Bottle Detected!')
+    # Check if a file was uploaded
+    if uploaded_file is not None and uploaded_file!='hello':
+        # Process the uploaded file
+        try:
+            image = string_to_pil_image(uploaded_file)
+            results = model(image)  # inference
 
-    if str(results).find('paper') == -1:
-        st.write('No Paper Detected.')
-        print('No Paper Detected.')
-    else:
-        st.write('Paper Detected!')
-        print('Paper Detected!')
+            if  str(results).find('plastic bottle') == -1:
+                st.write('No Plastic Bottle Detected.')
+                print('No Plastic Bottle Detected.')
+            else:
+                st.write('Plastic Bottle Detected!')
+                print('Plastic Bottle Detected!')
+
+            if str(results).find('paper') == -1:
+                st.write('No Paper Detected.')
+                print('No Paper Detected.')
+            else:
+                st.write('Paper Detected!')
+                print('Paper Detected!')   
+            st.image(image, caption='Uploaded Image')
+
+        except Exception as e:
+            print(e)
+        
+handle_file_upload()
