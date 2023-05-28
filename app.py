@@ -5,7 +5,7 @@ import streamlit as st
 import base64
 import io
 
-st.cache_resource
+@st.cache_resource
 def load_model():
     model = torch.hub.load('ultralytics/yolov5', 'custom', path='weights/best.pt')  # yolov5n - yolov5x6 or custom
     return model
