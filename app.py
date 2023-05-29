@@ -56,17 +56,17 @@ def handle_file_upload():
         results = model(image)  # inference
 
         if  str(results).find('plastic bottle') == -1:
-            st.write('No Plastic Bottle Detected.')
+            st.write('## No Plastic Bottle Detected.')
             print('No Plastic Bottle Detected.')
         else:
-            st.write('Plastic Bottle Detected!')
+            st.write('## Plastic Bottle Detected!')
             print('Plastic Bottle Detected!')
 
         if str(results).find('paper') == -1:
-            st.write('No Paper Detected.')
+            st.write('### No Paper Detected.')
             print('No Paper Detected.')
         else:
-            st.write('Paper Detected!')
+            st.write('### Paper Detected!')
             print('Paper Detected!')   
         st.image(image, caption='Uploaded Image')
         
