@@ -18,7 +18,7 @@ def string_to_pil_image(image_string):
     pil_image = Image.open(image_bytes)
     return pil_image
 
-def handle_file_upload():
+def handle_string_upload():
     uploaded_file = st.text_area('Insert Image String')
 
     # Check if a file was uploaded
@@ -45,5 +45,30 @@ def handle_file_upload():
 
         except Exception as e:
             print(e)
+
+def handle_file_upload():
+    uploaded_image = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+
+    # Check if an image is uploaded
+    if uploaded_image is not None:
+        # Process the uploaded image
+        image = Image.open(uploaded_image)
+        results = model(image)  # inference
+
+        if  str(results).find('plastic bottle') == -1:
+            st.write('No Plastic Bottle Detected.')
+            print('No Plastic Bottle Detected.')
+        else:
+            st.write('Plastic Bottle Detected!')
+            print('Plastic Bottle Detected!')
+
+        if str(results).find('paper') == -1:
+            st.write('No Paper Detected.')
+            print('No Paper Detected.')
+        else:
+            st.write('Paper Detected!')
+            print('Paper Detected!')   
+        st.image(image, caption='Uploaded Image')
         
 handle_file_upload()
+#handle_string_upload()
